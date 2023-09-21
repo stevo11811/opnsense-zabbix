@@ -1,0 +1,51 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 36bff6c29af64692839d077febfc7079
+      name: 'Templates/Network devices'
+  templates:
+    - uuid: 820e6b90dc644c19bee84471f72dfa16
+      template: 'OpnSense Active'
+      name: 'OpnSense Active'
+      groups:
+        - name: 'Templates/Network devices'
+      items:
+        - uuid: 2c952aacea6044f9a90a1c4187f26622
+          name: 'OpnSense Latest Version'
+          type: ZABBIX_ACTIVE
+          key: 'opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},core,firmware,status,product,product_latest]'
+          trends: '0'
+          value_type: TEXT
+        - uuid: d316ee5e04074ef29ceea0684b84490e
+          name: 'OpnSense Current Version'
+          type: ZABBIX_ACTIVE
+          key: 'opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},core,firmware,status,product,product_version]'
+          trends: '0'
+          value_type: TEXT
+        - uuid: f4f1f76faf214d6eaa0e40bff9215516
+          name: 'OpnSense Update Status'
+          type: ZABBIX_ACTIVE
+          key: 'opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},core,firmware,status,status_msg]'
+          trends: '0'
+          value_type: TEXT
+        - uuid: 2a42c02d3ee745ab8e74e46f30fd8411
+          name: 'OpnSense Firewall State Table Size'
+          type: ZABBIX_ACTIVE
+          key: 'opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},firewall,alias,getTableSize,size]'
+          trends: '0'
+          value_type: TEXT
+        - uuid: 425f73f57f5f4549a55f2a9c45c3e9bf
+          name: 'OpnSense Firewall State Table Used'
+          type: ZABBIX_ACTIVE
+          key: 'opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},firewall,alias,getTableSize,used]'
+          trends: '0'
+          value_type: TEXT
+      macros:
+        - macro: '{$OPNSENSE_API_KEY}'
+        - macro: '{$OPNSENSE_API_SECRET}'
+  triggers:
+    - uuid: 89c28328fe204611a3a217aabb77010c
+      expression: 'last(/OpnSense Active/opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},core,firmware,status,product,product_version])<>last(/OpnSense Active/opnsense.value[{$OPNSENSE_API_KEY},{$OPNSENSE_API_SECRET},core,firmware,status,product,product_latest])'
+      name: 'OpnSense New Version Available'
+      priority: INFO
+      manual_close: 'YES'
