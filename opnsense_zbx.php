@@ -8,9 +8,13 @@ if (empty($argv[3])) {
     die("Please specify the API endpoint as the first argument.\n");
 }
 
+// Init Args
+$folder = $argv[3];
 $api = $argv[4];
 $endpoint = $argv[5];
-$folder = $argv[3];
+
+// API Runs locally, SSL Verification bypassed as the SSL cert will never match, can be modified if needed.
+// First two arguments of input are the API KEYS used for auth which is input into Zabbix.
 curl_setopt($ch, CURLOPT_URL, "https://127.0.0.1/api/{$folder}/{$api}/{$endpoint}");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_USERPWD, "$argv[1]:$argv[2]");
